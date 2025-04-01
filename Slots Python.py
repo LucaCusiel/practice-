@@ -27,4 +27,6 @@ while True:
     else:
         break
 
-print("Test")
+balance = balance - betamount
+print(f"Rolling Slots With A Bet Of ${betamount}")
+print(f"Balance: ${balance}")
