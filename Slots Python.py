@@ -5,7 +5,7 @@ import os
 
 balance = 100
 symbols = ["💎","7️⃣","🔔","💗","🍓","🍒","🍋","🍇",]
-
+winnings = 0 
 payouts = {
     "💎": {"2": 1.5, "3": 20},
     "7️⃣": {"2": 1.5, "3": 5},
@@ -60,10 +60,38 @@ while True:
     else:
         break
 
-balance = balance - betamount
-delayed_text(f"Rolling Slots With A Bet Of ${betamount}\n")
-delayed_text(f"Balance: ${balance}\n")
 
-random_items = random.sample(symbols, 3)
-time. sleep(0.5)
-symbolwait(random_items)
+# Spin the slot (allows repeats of the symbol)
+random_items = random.choices(symbols, k=3)
+
+print("*******")
+for item in random_items:
+    print(item, end=" ", flush=True)
+    time.sleep(0.5)
+print("\n*******")
+
+
+
+if random_items[0] == random_items[1] == random_items[2]:
+    match_symbol = random_items[0]
+    if match_symbol == "💎":
+        winnings = 350 #jackpot
+        delayed_text("💎JACKPOT!!!💎 You hit 3 diamonds!\n")
+    else:
+            multiplier = payouts[match_symbol]["3"]
+            winnings = int(betamount * multiplier)
+            delayed_text(f"3x {match_symbol}! You win ${winnings}!\n")
+elif (random_items[0] == random_items[1] or 
+      random_items[0] == random_items[2] or 
+      random_items[1] == random_items[2]):
+     if random_items[0] == random_items[1] or random_items[0] == random_items[2]:
+          match_symbol = random_items[0]
+     else:
+        match_symbol = random_items[1]
+        multiplier = payouts[match_symbol]["2"]
+        winnings = int(betamount * multiplier)
+        delayed_text(f"2x {match_symbol}! You win ${winnings}!\n")
+else:
+    winnings = 0
+    delayed_text("No matches. You win nothing this time.\n")
+    
