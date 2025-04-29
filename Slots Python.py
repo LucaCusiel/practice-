@@ -95,3 +95,4 @@ else:
     winnings = 0
     delayed_text("No matches. You win nothing this time.\n")
     
+    #FIX PAYOUTS, if slots 1-2 match it does not displaying winning but slot 2-3 do
