@@ -3,12 +3,15 @@ import time
 import sys
 import os
 from PIL import Image
+import winsound
 
-balance = 100
+balance = 200
 symbols = ["💎","7️⃣","🔔","💗","🍓","🍒","🍋","🍇",]
 winnings = 0 
-jackpot = 350
+jackpot = 650
+newjackpot = 250
 payouts = {
+    "💎": {"2": 2},
     "7️⃣": {"2": 1.5, "3": 5},
     "🔔": {"2": 1.5, "3": 3},
     "💗": {"2": 1.5, "3": 2.5},
@@ -24,7 +27,7 @@ secondwheel = None
 thridwheel = None
 
 
-def delayed_text(s):   #Taken from https://www.youtube.com/watch?v=2h8e0tXHfk0 and edited to fit with my code and make it easier to use
+def delayed_text(s):   #https://www.youtube.com/watch?v=2h8e0tXHfk0  edited to fit with my code and make it easier to use
     for c in s:
         sys.stdout.write(c)
         sys.stdout.flush()    
@@ -49,22 +52,24 @@ delayed_text("Every time you bet it will take half of what you bet and put it in
 while True:
 
     while True:
+        delayed_text(f"The jackpot is currently ${jackpot}\n")
         try:
-            delayed_text(f"The jackpot is currently ${jackpot}\n")
             betamount = int(input("Enter your bet: "))
+
+            if betamount > balance:
+                    delayed_text("Not Enough Balance, You Poor. Please lower your bet\n") #Will keep repeating until user gives a bet that is within their balance
+                    time. sleep(1)
+
+            elif betamount < 1:    
+                    delayed_text("Please enter a valid bet\n")
+                    time. sleep(1)
+                
+            else:
+                break
+
         except ValueError:
             print("Please enter a valid bet\n")
-        if betamount > balance:
-                delayed_text("Not Enough Balance, You Poor. Please lower your bet\n") #Will keep repeating until user gives a bet that is within their balance
-                time. sleep(1)
-        elif betamount < 1:    
-                delayed_text("Please enter a valid bet\n")
-                time. sleep(1)
-        else:
-            break
 
-
-    jackpot = jackpot + betamount / 2
 
     # Spin the slot (allows repeats of the symbol)
     random_items = random.choices(symbols, k=3)
@@ -80,8 +85,9 @@ while True:
     if random_items[0] == random_items[1] == random_items[2]:
         match_symbol = random_items[0]
         if match_symbol == "💎":
-            winnings + jackpot #jackpot
+            balance = + balance + jackpot #jackpot WOULD NOT MESS WITH THIS AREA, PAIN IN THE ASS TO TRY DO IT ANY OTHER WAY OR TRY CHANGE ONE LITTLE THING     
             delayed_text("💎JACKPOT!!!💎 You hit 3 diamonds!\n")
+            jackpot = newjackpot  # Reset jackpot to 250$
         else:
                 multiplier = payouts[match_symbol]["3"]
                 winnings = int(betamount * multiplier)
@@ -100,6 +106,7 @@ while True:
         delayed_text(f"2x {match_symbol}! You win ${winnings}!\n")
 
         balance = balance + winnings 
+        balance = balance - betamount
 
     else:
         winnings = 0
@@ -108,12 +115,20 @@ while True:
         
     if balance <= 0: 
         delayed_text("You are now poor and owe the cartel money")
+        winsound.PlaySound("sadtrombone.mp3", 0)
         exit()
-    else: 
-        delayed_text(f"Your balance is now {balance}$\n")
-        play_again = input("Spin again? ").strip().lower()
+    else:
+        delayed_text(f"Your balance is now ${balance}\n")
 
-        if play_again != "yes":
+        # Only accept "yes" or "no" and repeats after wrong asnwer
+        while True:
+            play_again = input("Spin again? (yes/no): ").strip().lower()
+            if play_again in ["yes", "no"]:
+                break
+            else:
+                print("Please type 'yes' or 'no'")
+
+        if play_again == "no":
             im = Image.open(r"KeepGoing.jpg")
             im.show()
             break
