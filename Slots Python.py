@@ -4,6 +4,12 @@ import sys
 import os
 from PIL import Image
 import winsound
+import cv2
+import pygame
+import moviepy as mp
+
+pygame.mixer.init()
+
 
 balance = 200
 symbols = ["💎","7️⃣","🔔","💗","🍓","🍒","🍋","🍇",]
@@ -31,7 +37,7 @@ def delayed_text(s):   #https://www.youtube.com/watch?v=2h8e0tXHfk0  edited to f
     for c in s:
         sys.stdout.write(c)
         sys.stdout.flush()    
-        time.sleep(0.00)
+        time.sleep(0.0)
 
 
 
@@ -113,10 +119,48 @@ while True:
         delayed_text("No matches. You win nothing this time.\n")
         balance = balance - betamount
         
-    if balance <= 0: 
+    if balance <= 0:
+    
         delayed_text("You are now poor and owe the cartel money")
-        winsound.PlaySound("sadtrombone.mp3", 0)
+        video_path = "LossVideo.mp4"
+        if os.path.exists(video_path):
+            video_clip = mp.VideoFileClip(video_path)
+            audio_path = "LossVideo_audio.wav"
+            video_clip.audio.write_audiofile(audio_path, codec='pcm_s16le')
+            
+            pygame.mixer.music.load(audio_path)
+            pygame.mixer.music.play()
+            
+            cap = cv2.VideoCapture(video_path)
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            frame_time = 1 / fps
+            
+            start_time = time.time()
+            
+            cv2.namedWindow("Loss Video", cv2.WINDOW_NORMAL)
+            cv2.setWindowProperty("Loss Video", cv2.WND_PROP_TOPMOST, 1)  # Bring the window to the front
+            
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                elapsed_time = time.time() - start_time
+                
+                if elapsed_time >= frame_time * 0.98:
+                    cv2.imshow('Loss Video', frame)
+                    start_time = time.time()
+                    time.sleep(frame_time * 0.98)
+                
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
+            
+            cap.release()
+            cv2.destroyAllWindows()
+
+            os.remove(audio_path)
         exit()
+
     else:
         delayed_text(f"Your balance is now ${balance}\n")
 
