@@ -121,7 +121,6 @@ while True:
         
     if balance <= 0:
     
-        delayed_text("You are now poor and owe the cartel money")
         video_path = "LossVideo.mp4"
         if os.path.exists(video_path):
             video_clip = mp.VideoFileClip(video_path)
@@ -150,7 +149,7 @@ while True:
                 if elapsed_time >= frame_time * 0.98:
                     cv2.imshow('Loss Video', frame)
                     start_time = time.time()
-                    time.sleep(frame_time * 0.98)
+                    time.sleep(frame_time * 0.88)
                 
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
@@ -158,7 +157,7 @@ while True:
             cap.release()
             cv2.destroyAllWindows()
 
-            os.remove(audio_path)
+            delayed_text("You are now poor and owe the cartel money")
         exit()
 
     else:
@@ -167,7 +166,7 @@ while True:
         # Only accept "yes" or "no" and repeats after wrong asnwer
         while True:
             play_again = input("Spin again? (yes/no): ").strip().lower()
-            if play_again in ["yes", "no"]:
+            if play_again in ["yes", "no", "y", "n"]:
                 break
             else:
                 print("Please type 'yes' or 'no'")
