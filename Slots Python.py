@@ -52,7 +52,7 @@ def symbolwait(s):
 delayed_text("Welcome to 🎰Slots🎰\n")
 time. sleep(0.5)
 delayed_text(f'Current balance: ${balance}\n')
-delayed_text("To win the jackpot you will need to get 3 diamonds in a whole row\n")
+delayed_text("To win the jackpot you will need to get 3 💎 in a whole row\n")
 delayed_text("Every time you bet it will take half of what you bet and put it into the jackpot pool\n")
 
 while True:
@@ -66,15 +66,20 @@ while True:
                     delayed_text("Not Enough Balance, You Poor. Please lower your bet\n") #Will keep repeating until user gives a bet that is within their balance
                     time. sleep(1)
 
-            elif betamount < 1:    
+            elif betamount < 0:    
                     delayed_text("Please enter a valid bet\n")
                     time. sleep(1)
+
+            elif betamount < 10:    
+                    delayed_text("Please input a bet above 10$\n")
+                    time. sleep(1)
+                
                 
             else:
                 break
 
         except ValueError:
-            print("Please enter a valid bet\n")
+            delayed_text("Please enter a valid bet\n")
 
 
     # Spin the slot (allows repeats of the symbol)
@@ -113,11 +118,15 @@ while True:
 
         balance = balance + winnings 
         balance = balance - betamount
+        jackpot = jackpot + (balance / 2)
+        round(jackpot)
 
     else:
         winnings = 0
         delayed_text("No matches. You win nothing this time.\n")
         balance = balance - betamount
+        jackpot = jackpot + (balance / 2)
+        round(jackpot)
         
     if balance <= 0:
     
@@ -162,6 +171,7 @@ while True:
 
     else:
         delayed_text(f"Your balance is now ${balance}\n")
+        print()
 
         # Only accept "yes" or "no" and repeats after wrong asnwer
         while True:
