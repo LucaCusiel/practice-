@@ -37,7 +37,7 @@ def delayed_text(s):   #https://www.youtube.com/watch?v=2h8e0tXHfk0  edited to f
     for c in s:
         sys.stdout.write(c)
         sys.stdout.flush()    
-        time.sleep(0.0)
+        time.sleep(0.05)
 
 
 
@@ -119,14 +119,13 @@ while True:
         balance = balance + winnings 
         balance = balance - betamount
         jackpot = jackpot + (balance / 2)
-        round(jackpot)
 
     else:
         winnings = 0
         delayed_text("No matches. You win nothing this time.\n")
         balance = balance - betamount
         jackpot = jackpot + (balance / 2)
-        round(jackpot)
+        
         
     if balance <= 0:
     
