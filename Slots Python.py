@@ -37,7 +37,7 @@ def delayed_text(s):   #https://www.youtube.com/watch?v=2h8e0tXHfk0  edited to f
     for c in s:
         sys.stdout.write(c)
         sys.stdout.flush()    
-        time.sleep(0.05)
+        time.sleep(0.0)
 
 
 
@@ -102,6 +102,7 @@ while True:
         else:
                 multiplier = payouts[match_symbol]["3"]
                 winnings = int(betamount * multiplier)
+                winning = winnings - betamount
                 delayed_text(f"3x {match_symbol}! You win ${winnings}!\n")
     elif (random_items[0] == random_items[1] or 
         random_items[0] == random_items[2] or 
@@ -114,6 +115,7 @@ while True:
 
         multiplier = payouts[match_symbol]["2"]
         winnings = int(betamount * multiplier)
+        winning = winnings - betamount
         delayed_text(f"2x {match_symbol}! You win ${winnings}!\n")
 
         balance = balance + winnings 
