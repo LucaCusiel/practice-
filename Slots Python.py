@@ -3,7 +3,6 @@ import time
 import sys
 import os
 from PIL import Image
-import winsound
 import cv2
 import pygame
 import moviepy as mp
@@ -11,33 +10,29 @@ import moviepy as mp
 pygame.mixer.init()
 
 
-balance = 200
+balance = 400
 symbols = ["💎","7️⃣","🔔","💗","🍓","🍒","🍋","🍇",]
 winnings = 0 
 jackpot = 650
 newjackpot = 250
 payouts = {
     "💎": {"2": 2},
-    "7️⃣": {"2": 1.5, "3": 5},
-    "🔔": {"2": 1.5, "3": 3},
-    "💗": {"2": 1.5, "3": 2.5},
-    "🍓": {"2": 1.45, "3": 1.75},
-    "🍒": {"2": 1.35, "3": 1.65},
-    "🍋": {"2": 1.2, "3": 1.5},
-    "🍇": {"2": 1.2, "3": 1.5},
+    "7️⃣": {"2": 1.5, "3": 7},
+    "🔔": {"2": 1.5, "3": 4},
+    "💗": {"2": 1.5, "3": 3.5},
+    "🍓": {"2": 1.45, "3": 2.75},
+    "🍒": {"2": 1.35, "3": 2.65},
+    "🍋": {"2": 1.2, "3": 2.5},
+    "🍇": {"2": 1.2, "3": 2.5},
 }
 
-
-firstwheel = None
-secondwheel = None
-thridwheel = None
 
 
 def delayed_text(s):   #https://www.youtube.com/watch?v=2h8e0tXHfk0  edited to fit with my code and make it easier to use
     for c in s:
         sys.stdout.write(c)
         sys.stdout.flush()    
-        time.sleep(0.0)
+        time.sleep(0.05)
 
 
 
@@ -81,7 +76,6 @@ while True:
         except ValueError:
             delayed_text("Please enter a valid bet\n")
 
-
     # Spin the slot (allows repeats of the symbol)
     random_items = random.choices(symbols, k=3)
 
@@ -113,14 +107,14 @@ while True:
         else:
             match_symbol = random_items[1]
 
+        
         multiplier = payouts[match_symbol]["2"]
         winnings = int(betamount * multiplier)
-        winning = winnings - betamount
+        winnings = winnings - betamount
         delayed_text(f"2x {match_symbol}! You win ${winnings}!\n")
-
         balance = balance + winnings 
-        balance = balance - betamount
         jackpot = jackpot + (balance / 2)
+        balance = balance - betamount
 
     else:
         winnings = 0
@@ -135,7 +129,7 @@ while True:
         if os.path.exists(video_path):
             video_clip = mp.VideoFileClip(video_path)
             audio_path = "LossVideo_audio.wav"
-            video_clip.audio.write_audiofile(audio_path, codec='pcm_s16le')
+            video_clip.audio.write_audiofile(audio_path, codec='pcm_s16le', logger=None)
             
             pygame.mixer.music.load(audio_path)
             pygame.mixer.music.play()
@@ -182,7 +176,7 @@ while True:
             else:
                 print("Please type 'yes' or 'no'")
 
-        if play_again == "no":
+        if play_again in "["no", "n"]":
             im = Image.open(r"KeepGoing.jpg")
             im.show()
             break
